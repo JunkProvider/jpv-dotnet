@@ -22,5 +22,10 @@ namespace SpaceConsole.ConsoleApp
         {
             return items.Concat(new OptionalEnumerable<T>(() => new Optional<T>(itemToAppend())));
         }
+
+        public static IEnumerable<T> Except<T>(this IEnumerable<T> items, T excludedItem)
+        {
+            return items.Except(new[] {excludedItem});
+        }
     }
 }

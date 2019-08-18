@@ -14,12 +14,12 @@ namespace SpaceConsole.ConsoleApp.Model
     {
         public Station CurrentStation { get; set; }
 
-        public Inventory CargoBay { get; } = new Inventory(1000);
+        public Inventory CargoBay { get; } = new Inventory(200);
 
         public IEngine Engine { get; } = new Engine(
             name: "Pacer",
             mass: 2.000.Tons(),
-            specificImpulse: 5000.00.MeterPerSecond(),
+            specificImpulse: 3500.00.MeterPerSecond(),
             fuelComponents: new[]
             {
                 new ItemStack(new LiquidElementItem(Elements.Hydrogen), 2),
@@ -34,9 +34,9 @@ namespace SpaceConsole.ConsoleApp.Model
 
         public double PowerUsage { get; set; }
 
-        public double NavigationRange => 10.000.AstronomicUnits();
+        public double NavigationRange => 50.000.AstronomicUnits();
 
-        public double ChasisMass => 10.000.Tons();
+        public double ChasisMass => (CargoBay.Space / 20).Tons() /* > 10% of fuel mass if H2 and O2 used */ + 10.Tons() /* Infrastructure and Interior */;
 
         public double EmptyMass => ChasisMass + Engine.Mass;
 

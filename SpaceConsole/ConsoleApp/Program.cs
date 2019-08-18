@@ -43,7 +43,7 @@ namespace SpaceConsole.ConsoleApp
             var blackHoleRadius = 100 * starRadius;
 
             var factory = new CelestialFactory();
-            
+
             var universe = factory.Create(
                 systemName: "Universe",
                 name: "Universe Center",
@@ -69,14 +69,14 @@ namespace SpaceConsole.ConsoleApp
                                 {
                                     factory.Create(
                                         name: "Mercury",
-                                        orbit: 0.3.AstronomicUnits(),
-                                        radius: rockPlanetRadius / 5,
-                                        density: 3.TonsPerCubicMeter()),
+                                        orbit: 0.387098.AstronomicUnits(),
+                                        radius: 2439.7.Kilometer(),
+                                        density: 5.427.GramPerCubicCentimeter()),
                                     factory.Create(
                                         name: "Venus",
-                                        orbit: 0.6.AstronomicUnits(),
-                                        radius: rockPlanetRadius * 1.1,
-                                        density: 5.TonsPerCubicMeter()),
+                                        orbit: 0.723332.AstronomicUnits(),
+                                        radius: 6051.8.Kilometer(),
+                                        density: 5.243.GramPerCubicCentimeter()),
                                     factory.Create(
                                         name: "Earth",
                                         orbit: 1.AstronomicUnits(),
@@ -86,9 +86,9 @@ namespace SpaceConsole.ConsoleApp
                                         {
                                             factory.Create(
                                                 name: "Moon",
-                                                orbit: rockPlanetRadius * 100,
-                                                radius: moonRadius,
-                                                density: 2.5.TonsPerCubicMeter())
+                                                orbit: 384399.Kilometer(),
+                                                radius: 1737.1.Kilometer(),
+                                                density: 3.344.GramPerCubicCentimeter())
                                         }),
                                     factory.Create(
                                         name: "Mars",
@@ -97,9 +97,29 @@ namespace SpaceConsole.ConsoleApp
                                         density: 3.9335.GramPerCubicCentimeter()),
                                     factory.Create(
                                         name: "Jupiter",
-                                        orbit: 4.AstronomicUnits(),
-                                        radius: gasGiantRadius,
-                                        density: 2.TonsPerCubicMeter())
+                                        orbit: 5.2044.AstronomicUnits(),
+                                        radius: 69911.Kilometer(),
+                                        density: 1.326.GramPerCubicCentimeter()),
+                                    factory.Create(
+                                        name: "Saturn",
+                                        orbit: 9.5826.AstronomicUnits(),
+                                        radius: 58232.Kilometer(),
+                                        density: 0.687.GramPerCubicCentimeter()),
+                                    factory.Create(
+                                        name: "Uranus",
+                                        orbit: 19.2184.AstronomicUnits(),
+                                        radius: 25362.Kilometer(),
+                                        density: 1.27.GramPerCubicCentimeter()),
+                                    factory.Create(
+                                        name: "Neptune",
+                                        orbit: 30.11.AstronomicUnits(),
+                                        radius: 24622.Kilometer(),
+                                        density: 1.638.GramPerCubicCentimeter()),
+                                    factory.Create(
+                                        name: "Pluto",
+                                        orbit: 39.48.AstronomicUnits(),
+                                        radius: 1188.3.Kilometer(),
+                                        density: 1.854.GramPerCubicCentimeter())
                                 })
                         })
                 });
@@ -111,34 +131,19 @@ namespace SpaceConsole.ConsoleApp
                 PowerUsage = 80,
                 Credits = 1000
             };
-            ship.CargoBay.Add(new ItemStack(new LiquidElementItem(Elements.Oxygen), 150));
-            ship.CargoBay.Add(new ItemStack(new BakedBeans(), 20));
 
             World = new World {Ship = ship};
 
-            World.Stations.Add(new Station("Earth Station", universe.GetDescendent("Earth System"), 300e3.Kilometer())
-            {
-                OfferedItems = new List<MarketplaceItem>
-                {
-                    new MarketplaceItem(new ItemStack(new LiquidElementItem(Elements.Hydrogen), 5000), new decimal(0.1)),
-                    new MarketplaceItem(new ItemStack(new BakedBeans(), 40), new decimal(2.5))
-                },
-                RequestedItems = new List<MarketplaceItem>
-                {
-                    new MarketplaceItem(new ItemStack(new LiquidElementItem(Elements.Oxygen), 5000), new decimal(0.1))
-                }
-            });
-            /* World.Stations.Add(new Station("Bob's Workshop", new Vector(1.85.AstronomicUnits(), 0))
-            {
-                RequestedItems = new List<MarketplaceItem>
-                {
-                    new MarketplaceItem(new ItemStack(new BakedBeans(), 100), new decimal(3.1))
-                }
-            });
-            World.Stations.Add(new Station("Europa Hydroponics", new Vector(5.0.AstronomicUnits(), 5.0.AstronomicUnits()))); */
+            var earth = universe.GetDescendent("Earth System");
+
+            World.Stations.Add(CreateStation(earth));
+
             World.Ship.CurrentStation = World.Stations[0];
 
-            World.Stations.Add(new Station("Mars Station", universe.GetDescendent("Mars System"), 300e3.Kilometer()));
+            foreach (var system in earth.GetSiblings())
+            {
+                World.Stations.Add(CreateStation(system));
+            }
 
             ViewModel = new IngameModel(World);
             ViewModel.Update();
@@ -146,6 +151,23 @@ namespace SpaceConsole.ConsoleApp
             CommandService = new CommandService(ViewModel);
 
             MainControl = new IngameControl(ViewModel);
+        }
+
+        private static Station CreateStation(ICelestialSystem system)
+        {
+            return new Station($"{system.CentralBody.Name} Station", system, 200000.Kilometer() + system.CentralBody.Radius * 100)
+            {
+                OfferedItems = new List<MarketplaceItem>
+                {
+                    new MarketplaceItem(new ItemStack(new LiquidElementItem(Elements.Hydrogen), 5000), new decimal(0.11)),
+                    new MarketplaceItem(new ItemStack(new LiquidElementItem(Elements.Oxygen), 5000), new decimal(1.8)),
+                },
+                RequestedItems = new List<MarketplaceItem>
+                {
+                    new MarketplaceItem(new ItemStack(new LiquidElementItem(Elements.Hydrogen), 5000), new decimal(0.1)),
+                    new MarketplaceItem(new ItemStack(new LiquidElementItem(Elements.Oxygen), 5000), new decimal(1.6))
+                }
+            };
         }
 
         public void Run()

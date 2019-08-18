@@ -25,6 +25,9 @@ namespace JPV.RocketScience.FuelCalculation
 
         public double GetAvailableMass()
         {
+            if (Components.Count == 0)
+                return 0;
+
             return Components.Sum(c => c.AvailableMass);
         }
 
@@ -35,6 +38,9 @@ namespace JPV.RocketScience.FuelCalculation
 
         public double GetBurnableMass()
         {
+            if (Components.Count == 0)
+                return 0;
+
             return Components.Min(c => c.AvailableMass / c.Portion);
         }
 
@@ -45,6 +51,9 @@ namespace JPV.RocketScience.FuelCalculation
 
         public double GetExcessMass(double exhaustedMass)
         {
+            if (Components.Count == 0)
+                return 0;
+
             return Components.Sum(c => Math.Max(0, c.AvailableMass - (exhaustedMass * c.Portion)));
         }
     }

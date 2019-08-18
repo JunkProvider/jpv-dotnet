@@ -40,7 +40,7 @@ namespace SpaceConsole.ConsoleApp.ViewModel
                     return new StationTarget(station, distance, requiredDeltaVelocity: requiredDeltaVelocity, requiredFuel: requiredFuel);
                 })
                 .Where(target => target.Distance <= ship.NavigationRange)
-                .OrderBy(target => target.Distance)
+                .OrderBy(target => target.Station.CelestialSystem.Orbit)
                 .ToList();
         }
     }
